@@ -1,3 +1,4 @@
+
 'use client'
 
 import { MapContainer, TileLayer, Circle, Popup } from 'react-leaflet'
@@ -36,10 +37,7 @@ export default function MapLeaflet({
           boundsOptions={{ padding: [40, 40] }}
           style={{ height: '100%', width: '100%' }}
         >
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
           {points.map(p => (
             <Circle
@@ -64,10 +62,7 @@ export default function MapLeaflet({
           zoom={11}
           style={{ height: '100%', width: '100%' }}
         >
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
           {typeof radiusKm === 'number' && (
             <Circle
