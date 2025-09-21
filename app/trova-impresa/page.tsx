@@ -1,6 +1,5 @@
-
 import { prisma } from '@/lib/prisma'
-import dynamic from 'next/dynamic'
+import NextDynamic from 'next/dynamic'   // <- rinominato per evitare collisione
 
 export const dynamic = 'force-dynamic'
 
@@ -23,7 +22,8 @@ function haversineKm(a:{lat:number,lng:number}, b:{lat:number,lng:number}){
   return 2*R*Math.asin(Math.sqrt(h))
 }
 
-const MapLeaflet = dynamic(()=>import('../components/map-leaflet'), { ssr:false })
+// uso l'import rinominato:
+const MapLeaflet = NextDynamic(() => import('../components/map-leaflet'), { ssr:false })
 
 export default async function Page({ searchParams }: { searchParams?: { provincia?: string; skill?: string; verified?: string; lat?: string; lng?: string; r?: string } }){
   const provincia = (searchParams?.provincia || '').trim().toUpperCase()
@@ -90,3 +90,4 @@ export default async function Page({ searchParams }: { searchParams?: { provinci
     </section>
   )
 }
+
