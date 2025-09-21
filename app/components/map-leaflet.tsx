@@ -1,10 +1,10 @@
 'use client'
 
 import { MapContainer, TileLayer, Circle, Popup } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
 import { useMemo } from 'react'
 
 type Point = { id: string; name: string; lat: number; lng: number; verified?: boolean }
+
 export default function MapLeaflet({
   points,
   center,
@@ -14,7 +14,7 @@ export default function MapLeaflet({
   center?: { lat: number; lng: number }
   radiusKm?: number
 }) {
-  const defaultCenter = { lat: 41.125, lng: 16.866 } // Bari come fallback
+  const defaultCenter = { lat: 41.125, lng: 16.866 } // Bari fallback
 
   const bounds = useMemo(() => {
     if (!points?.length) return null
@@ -43,25 +43,16 @@ export default function MapLeaflet({
         boundsOptions={{ padding: [40, 40] }}
       >
         <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
+          attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
         {typeof radiusKm === 'number' && (
-          <Circle
-            center={[mapCenter.lat, mapCenter.lng]}
-            radius={radiusKm * 1000}
-            pathOptions={{ weight: 1, fillOpacity: 0.05 }}
-          />
+          <Circle center={[mapCenter.lat, mapCenter.lng]} radius={radiusKm * 1000} pathOptions={{ weight: 1, fillOpacity: 0.05 }} />
         )}
 
         {points.map(p => (
-          <Circle
-            key={p.id}
-            center={[p.lat, p.lng]}
-            radius={80}
-            pathOptions={{ weight: 1, fillOpacity: 0.6 }}
-          >
+          <Circle key={p.id} center={[p.lat, p.lng]} radius={80} pathOptions={{ weight: 1, fillOpacity: 0.6 }}>
             <Popup>
               <strong>{p.name}</strong>
               {p.verified ? <div>✅ Verificata</div> : null}
@@ -75,3 +66,4 @@ export default function MapLeaflet({
     </div>
   )
 }
+
