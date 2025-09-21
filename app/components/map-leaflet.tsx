@@ -1,6 +1,6 @@
 'use client'
 
-import { MapContainer, TileLayer, Circle, Popup, type MapContainerProps } from 'react-leaflet'
+import { MapContainer, TileLayer, Circle, Popup } from 'react-leaflet'
 import { useMemo } from 'react'
 
 type Point = { id: string; name: string; lat: number; lng: number; verified?: boolean }
@@ -28,55 +28,73 @@ export default function MapLeaflet({
 
   const mapCenter = center ?? (points[0] ? { lat: points[0].lat, lng: points[0].lng } : defaultCenter)
 
-  // Definiamo esplicitamente il tipo delle props per evitare ambiguità con l'unione.
-  let mapProps: MapContainerProps
-  if (bounds) {
-    mapProps = {
-      bounds,
-      boundsOptions: { padding: [40, 40] as [number, number] },
-      style: { height: '100%', width: '100%' },
-    }
-  } else {
-    mapProps = {
-      center: [mapCenter.lat, mapCenter.lng] as [number, number],
-      zoom: 11,
-      style: { height: '100%', width: '100%' },
-    }
-  }
-
   return (
     <div style={{ height: 420, width: '100%', borderRadius: 16, overflow: 'hidden' }}>
-      <MapContainer {...mapProps}>
-        <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-
-        {typeof radiusKm === 'number' && !bounds && (
-          <Circle
-            center={[mapCenter.lat, mapCenter.lng]}
-            radius={radiusKm * 1000}
-            pathOptions={{ weight: 1, fillOpacity: 0.05 }}
+      {bounds ? (
+        <MapContainer
+          bounds={bounds}
+          boundsOptions={{ padding: [40, 40] }}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        )}
 
-        {points.map(p => (
-          <Circle
-            key={p.id}
-            center={[p.lat, p.lng]}
-            radius={80}
-            pathOptions={{ weight: 1, fillOpacity: 0.6 }}
-          >
-            <Popup>
-              <strong>{p.name}</strong>
-              {p.verified ? <div>✅ Verificata</div> : null}
-              <div>
-                {p.lat.toFixed(4)}, {p.lng.toFixed(4)}
-              </div>
-            </Popup>
-          </Circle>
-        ))}
-      </MapContainer>
+          {points.map(p => (
+            <Circle
+              key={p.id}
+              center={[p.lat, p.lng]}
+              radius={80}
+              pathOptions={{ weight: 1, fillOpacity: 0.6 }}
+            >
+              <Popup>
+                <strong>{p.name}</strong>
+                {p.verified ? <div>✅ Verificata</div> : null}
+                <div>
+                  {p.lat.toFixed(4)}, {p.lng.toFixed(4)}
+                </div>
+              </Popup>
+            </Circle>
+          ))}
+        </MapContainer>
+      ) : (
+        <MapContainer
+          center={[mapCenter.lat, mapCenter.lng]}
+          zoom={11}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+
+          {typeof radiusKm === 'number' && (
+            <Circle
+              center={[mapCenter.lat, mapCenter.lng]}
+              radius={radiusKm * 1000}
+              pathOptions={{ weight: 1, fillOpacity: 0.05 }}
+            />
+          )}
+
+          {points.map(p => (
+            <Circle
+              key={p.id}
+              center={[p.lat, p.lng]}
+              radius={80}
+              pathOptions={{ weight: 1, fillOpacity: 0.6 }}
+            >
+              <Popup>
+                <strong>{p.name}</strong>
+                {p.verified ? <div>✅ Verificata</div> : null}
+                <div>
+                  {p.lat.toFixed(4)}, {p.lng.toFixed(4)}
+                </div>
+              </Popup>
+            </Circle>
+          ))}
+        </MapContainer>
+      )}
     </div>
   )
 }
