@@ -1,7 +1,7 @@
 
 'use client'
 
-import { MapContainer, TileLayer, Circle, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import { useMemo } from 'react'
 
 type Point = { id: string; name: string; lat: number; lng: number; verified?: boolean }
@@ -9,7 +9,7 @@ type Point = { id: string; name: string; lat: number; lng: number; verified?: bo
 export default function MapLeaflet({
   points,
   center,
-  radiusKm,
+  radiusKm, // non lo disegniamo, ma lo teniamo per compatibilità futura
 }: {
   points: Point[]
   center?: { lat: number; lng: number }
@@ -32,19 +32,15 @@ export default function MapLeaflet({
   return (
     <div style={{ height: 420, width: '100%', borderRadius: 16, overflow: 'hidden' }}>
       {bounds ? (
-        <MapContainer
-          bounds={bounds}
-          boundsOptions={{ padding: [40, 40] }}
-          style={{ height: '100%', width: '100%' }}
-        >
+        <MapContainer bounds={bounds} boundsOptions={{ padding: [40, 40] }} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
           {points.map(p => (
-            <Circle
+            <CircleMarker
               key={p.id}
               center={[p.lat, p.lng]}
-              radius={80}
-              pathOptions={{ weight: 1, fillOpacity: 0.6 }}
+              radius={8} /* px */
+              pathOptions={{ weight: 1, fillOpacity: 0.7 }}
             >
               <Popup>
                 <strong>{p.name}</strong>
@@ -53,31 +49,19 @@ export default function MapLeaflet({
                   {p.lat.toFixed(4)}, {p.lng.toFixed(4)}
                 </div>
               </Popup>
-            </Circle>
+            </CircleMarker>
           ))}
         </MapContainer>
       ) : (
-        <MapContainer
-          center={[mapCenter.lat, mapCenter.lng]}
-          zoom={11}
-          style={{ height: '100%', width: '100%' }}
-        >
+        <MapContainer center={[mapCenter.lat, mapCenter.lng]} zoom={11} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {typeof radiusKm === 'number' && (
-            <Circle
-              center={[mapCenter.lat, mapCenter.lng]}
-              radius={radiusKm * 1000}
-              pathOptions={{ weight: 1, fillOpacity: 0.05 }}
-            />
-          )}
-
           {points.map(p => (
-            <Circle
+            <CircleMarker
               key={p.id}
               center={[p.lat, p.lng]}
-              radius={80}
-              pathOptions={{ weight: 1, fillOpacity: 0.6 }}
+              radius={8}
+              pathOptions={{ weight: 1, fillOpacity: 0.7 }}
             >
               <Popup>
                 <strong>{p.name}</strong>
@@ -86,10 +70,11 @@ export default function MapLeaflet({
                   {p.lat.toFixed(4)}, {p.lng.toFixed(4)}
                 </div>
               </Popup>
-            </Circle>
+            </CircleMarker>
           ))}
         </MapContainer>
       )}
     </div>
   )
 }
+
