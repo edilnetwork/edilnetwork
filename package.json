@@ -1,37 +1,21 @@
 {
   "name": "edilnetwork",
   "private": true,
-  "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "prisma generate && prisma migrate deploy || true && next build",
     "start": "next start"
   },
   "dependencies": {
-    "next": "14.2.5",
+    "@prisma/client": "^5.18.0",
+    "leaflet": "^1.9.4",
+    "next": "14.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "zod": "3.23.8",
-    "@prisma/client": "5.17.0",
-    "prisma": "5.17.0",
-    "@aws-sdk/client-s3": "3.637.0",
-    "@aws-sdk/s3-request-presigner": "3.637.0",
-    "@sendgrid/mail": "8.1.4",
-    "swr": "2.2.5",
-    "pdf-lib": "1.17.1"
-  }
-}
-{
-  "dependencies": {
-    "@prisma/client": "^5.18.0",
-    "prisma": "^5.18.0",
-    "leaflet": "^1.9.4",
-    "react-leaflet": "^4.2.1",
-    "next": "14.x",
-    "react": "18.x",
-    "react-dom": "18.x"
+    "react-leaflet": "^4.2.1"
   },
-  "scripts": {
-    "build": "prisma generate && prisma migrate deploy || true && next build"
+  "devDependencies": {
+    "prisma": "^5.18.0",
+    "typescript": "^5.6.3"
   }
 }
