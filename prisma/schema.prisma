@@ -1,0 +1,76 @@
+
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Company {
+  id           String   @id @default(cuid())
+  legalName    String
+  vat          String
+  contactName  String
+  email        String
+  phone        String
+  serviceAreas String
+  skills       String
+  province     String?
+  city         String?
+  capacity     String?
+  lat          Float?
+  lng          Float?
+  createdAt    DateTime @default(now())
+  applications JobApplication[]
+  documents    Document[]
+}
+
+model Document {
+  id             String   @id @default(cuid())
+  companyId      String
+  type           String
+  filename       String
+  url            String
+  uploadedAt     DateTime @default(now())
+  expiresOn      DateTime?
+  verified       Boolean  @default(false)
+  lastNotifiedAt DateTime?
+  company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Job {
+  id        String   @id @default(cuid())
+  title     String
+  description String?
+  city      String?
+  province  String?
+  category  String?
+  createdAt DateTime @default(now())
+  applications JobApplication[]
+  invitations Invitation[]
+  leads       ApplicationLead[]
+}
+
+model JobApplication {
+  id        String   @id @default(cuid())
+  jobId     String
+  companyId String
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  jobId     String
+  email     String
+  token     String   @unique
+  status    String   @default("sent")
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+model ApplicationLead {
+  id        String   @id @default(cuid())
+  jobId     String
+  email     String
+  message   String?
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
