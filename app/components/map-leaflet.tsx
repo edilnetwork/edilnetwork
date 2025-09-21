@@ -1,6 +1,6 @@
 'use client'
 
-import { MapContainer, TileLayer, Circle, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Circle, Popup, type MapContainerProps } from 'react-leaflet'
 import { useMemo } from 'react'
 
 type Point = { id: string; name: string; lat: number; lng: number; verified?: boolean }
@@ -28,18 +28,25 @@ export default function MapLeaflet({
 
   const mapCenter = center ?? (points[0] ? { lat: points[0].lat, lng: points[0].lng } : defaultCenter)
 
-  // Props alternativi: se ho bounds, NON passo center/zoom
-  const mapProps = bounds
-    ? { bounds, boundsOptions: { padding: [40, 40] as [number, number] } }
-    : { center: [mapCenter.lat, mapCenter.lng] as [number, number], zoom: 11 }
+  // Definiamo esplicitamente il tipo delle props per evitare ambiguità con l'unione.
+  let mapProps: MapContainerProps
+  if (bounds) {
+    mapProps = {
+      bounds,
+      boundsOptions: { padding: [40, 40] as [number, number] },
+      style: { height: '100%', width: '100%' },
+    }
+  } else {
+    mapProps = {
+      center: [mapCenter.lat, mapCenter.lng] as [number, number],
+      zoom: 11,
+      style: { height: '100%', width: '100%' },
+    }
+  }
 
   return (
     <div style={{ height: 420, width: '100%', borderRadius: 16, overflow: 'hidden' }}>
-      <MapContainer
-        {...mapProps}
-        scrollWheelZoom
-        style={{ height: '100%', width: '100%' }}
-      >
+      <MapContainer {...mapProps}>
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -73,5 +80,3 @@ export default function MapLeaflet({
     </div>
   )
 }
-
-
