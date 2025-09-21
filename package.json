@@ -21,3 +21,17 @@
     "pdf-lib": "1.17.1"
   }
 }
+{
+  "dependencies": {
+    "@prisma/client": "^5.18.0",
+    "prisma": "^5.18.0",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.1",
+    "next": "14.x",
+    "react": "18.x",
+    "react-dom": "18.x"
+  },
+  "scripts": {
+    "build": "prisma generate && prisma migrate deploy || true && next build"
+  }
+}
