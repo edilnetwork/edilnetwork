@@ -20,39 +20,46 @@ export default function MapLeaflet({
     if (!points?.length) return null
     const lats = points.map(p => p.lat)
     const lngs = points.map(p => p.lng)
-    const south = Math.min(...lats)
-    const north = Math.max(...lats)
-    const west = Math.min(...lngs)
-    const east = Math.max(...lngs)
     return [
-      [south, west],
-      [north, east],
+      [Math.min(...lats), Math.min(...lngs)],
+      [Math.max(...lats), Math.max(...lngs)],
     ] as [[number, number], [number, number]]
   }, [points])
 
   const mapCenter = center ?? (points[0] ? { lat: points[0].lat, lng: points[0].lng } : defaultCenter)
 
+  // Props alternativi: se ho bounds, NON passo center/zoom
+  const mapProps = bounds
+    ? { bounds, boundsOptions: { padding: [40, 40] as [number, number] } }
+    : { center: [mapCenter.lat, mapCenter.lng] as [number, number], zoom: 11 }
+
   return (
     <div style={{ height: 420, width: '100%', borderRadius: 16, overflow: 'hidden' }}>
       <MapContainer
-        center={[mapCenter.lat, mapCenter.lng]}
-        zoom={11}
+        {...mapProps}
         scrollWheelZoom
         style={{ height: '100%', width: '100%' }}
-        bounds={bounds ?? undefined}
-        boundsOptions={{ padding: [40, 40] }}
       >
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {typeof radiusKm === 'number' && (
-          <Circle center={[mapCenter.lat, mapCenter.lng]} radius={radiusKm * 1000} pathOptions={{ weight: 1, fillOpacity: 0.05 }} />
+        {typeof radiusKm === 'number' && !bounds && (
+          <Circle
+            center={[mapCenter.lat, mapCenter.lng]}
+            radius={radiusKm * 1000}
+            pathOptions={{ weight: 1, fillOpacity: 0.05 }}
+          />
         )}
 
         {points.map(p => (
-          <Circle key={p.id} center={[p.lat, p.lng]} radius={80} pathOptions={{ weight: 1, fillOpacity: 0.6 }}>
+          <Circle
+            key={p.id}
+            center={[p.lat, p.lng]}
+            radius={80}
+            pathOptions={{ weight: 1, fillOpacity: 0.6 }}
+          >
             <Popup>
               <strong>{p.name}</strong>
               {p.verified ? <div>✅ Verificata</div> : null}
@@ -66,4 +73,5 @@ export default function MapLeaflet({
     </div>
   )
 }
+
 
