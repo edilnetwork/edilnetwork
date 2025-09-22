@@ -17,19 +17,31 @@ export default async function AdminPage() {
     take: 200,
   })
 
-  return (
-    <main style={{ maxWidth: 1100, margin: '40px auto', padding: '0 16px' }}>
-      <h1>Admin • Aziende registrate</h1>
-      <p className="lead">Accesso protetto. Utente e password dalle variabili d’ambiente.</p>
+  const wrap: React.CSSProperties = { maxWidth: 1100, margin: '40px auto', padding: '0 16px' }
+  const table: React.CSSProperties = { width: '100%', borderCollapse: 'collapse', marginTop: 16 }
+  const cell: React.CSSProperties = { borderBottom: '1px solid #eee', padding: '10px', verticalAlign: 'top', textAlign: 'left' }
+  const lead: React.CSSProperties = { color: '#555', fontSize: 12 }
+  const badge: React.CSSProperties = { display: 'inline-block', padding: '2px 8px', borderRadius: 999, background: '#eee', fontSize: 12 }
+  const badgeVerified: React.CSSProperties = {
+    ...badge,
+    background: '#e6ffed',
+    color: '#03670d',
+    border: '1px solid #a7f3d0',
+  }
 
-      <table className="table" style={{ width: '100%', marginTop: 16 }}>
+  return (
+    <main style={wrap}>
+      <h1>Admin • Aziende registrate</h1>
+      <p style={lead}>Accesso protetto (Basic Auth via middleware). Utente e password dalle variabili d’ambiente.</p>
+
+      <table style={table}>
         <thead>
           <tr>
-            <th>Ragione sociale</th>
-            <th>Contatti</th>
-            <th>Aree / Skill</th>
-            <th>Stato</th>
-            <th>Doc.</th>
+            <th style={cell}>Ragione sociale</th>
+            <th style={cell}>Contatti</th>
+            <th style={cell}>Aree / Skill</th>
+            <th style={cell}>Stato</th>
+            <th style={cell}>Doc.</th>
           </tr>
         </thead>
         <tbody>
@@ -37,37 +49,32 @@ export default async function AdminPage() {
             const verified = isVerified(c.documents as any)
             return (
               <tr key={c.id}>
-                <td>
+                <td style={cell}>
                   <strong>{c.legalName}</strong>
-                  <div className="lead">P.IVA {c.vat || '—'}</div>
-                  <div className="lead">{c.city || '—'} {c.province ? `(${c.province})` : ''}</div>
+                  <div style={lead}>P.IVA {c.vat || '—'}</div>
+                  <div style={lead}>
+                    {c.city || '—'} {c.province ? `(${c.province})` : ''}
+                  </div>
                 </td>
-                <td>
+                <td style={cell}>
                   {c.contactName}
-                  <div className="lead">{c.email}</div>
-                  <div className="lead">{c.phone || '—'}</div>
+                  <div style={lead}>{c.email}</div>
+                  <div style={lead}>{c.phone || '—'}</div>
                 </td>
-                <td>
+                <td style={cell}>
                   <div>{c.serviceAreas}</div>
-                  <div className="lead">{c.skills}</div>
+                  <div style={lead}>{c.skills}</div>
                 </td>
-                <td>
-                  {verified ? <span className="badge badge-verified">Verificata</span> : <span className="badge">Da verificare</span>}
+                <td style={cell}>
+                  {verified ? <span style={badgeVerified}>Verificata</span> : <span style={badge}>Da verificare</span>}
                 </td>
-                <td>{(c.documents as any[]).length}</td>
+                <td style={cell}>{(c.documents as any[]).length}</td>
               </tr>
             )
           })}
         </tbody>
       </table>
-
-      <style jsx>{`
-        .table { border-collapse: collapse; }
-        th, td { border-bottom: 1px solid #eee; padding: 10px; vertical-align: top; text-align: left; }
-        .lead { color: #555; font-size: 12px; }
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #eee; font-size: 12px; }
-        .badge-verified { background: #e6ffed; color: #03670d; border: 1px solid #a7f3d0; }
-      `}</style>
     </main>
   )
 }
+
